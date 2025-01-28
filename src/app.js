@@ -61,15 +61,43 @@ app.get('/', (req, res) => {
                 resolve(results)
             })
         }),
-    ]).then(([results1, results2, results3]) => {
+        new Promise((resolve, reject) => {
+            db.query(sqlAmount, [2024, 2024, 10], (err, results) => {
+                if (err) {
+                    reject(err)
+                }
+                resolve(results)
+            })
+        }),
+        new Promise((resolve, reject) => {
+            db.query(sqlTx, [year, month], (err, results) => {
+                if (err) {
+                    reject(err)
+                }
+                resolve(results)
+            })
+        })
+    ]).then(([results1, results2, results3, results4, results5]) => {
+        const cMonthReceive = results5[0].tx_amount;
+        const b202410Amount = results3[0].amount - results4[0].amount;
+        const a202410Amount = results4[0].amount;
+        const b202410Rent = b202410Amount * 0.02;
+        const a202410Rent = (a202410Amount - cMonthReceive) * 0.02625;
+        const operateAmount = results2[0].total_amount;
+        const cTotalAmount = b202410Rent + a202410Rent + operateAmount + results1[0].tx_amount;
+        const cMonthIncome = cTotalAmount / 0.65;
         let data = {
             timestamp: year + '年' + month + '月',
             totalAmount: results3[0].amount,
-            currentTotalAmount: results1[0].tx_amount + results3[0].amount * 0.02 + results2[0].total_amount,
+            currentMonthReceive: cMonthReceive,
+            totalBefore202410Amount: b202410Amount,
+            totalAfter202410Amount: a202410Amount,
+            currentTotalAmount: cTotalAmount,
             currentRefund: results1[0].tx_amount,
-            currentMonthRent: results3[0].amount * 0.02,
-            currentMonthIncome: (results1[0].tx_amount + results3[0].amount * 0.02 + results2[0].total_amount) / 0.65,
-            operatingAmount: results2[0].total_amount,
+            currentMonthRent: b202410Rent + a202410Rent,
+            currentMonthIncome: cMonthIncome,
+            currentIncomeAgain: cMonthIncome - cMonthReceive > 0 ? cMonthIncome - cMonthReceive : '已经完成任务',
+            operatingAmount: operateAmount,
         }
         // res.send(data)
         res.render('index', data)
