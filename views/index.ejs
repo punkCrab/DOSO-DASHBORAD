@@ -8,10 +8,14 @@
 <body>
   <h1><%= timestamp %>销售情况</h1>
   <h3>销售总额：<%= totalAmount %> 元</h3>
+  <h3>202410前销售总额：<%= totalBefore202410Amount %> 元</h3>
+  <h3>202410后销售总额：<%= totalAfter202410Amount %> 元</h3>
+  <h3>本月当前销售总额：<%= currentMonthReceive %> 元</h3>
   <h3>本月预计支出：<%= currentTotalAmount %> 元</h3>
   <h3>本月兑付金额：<%= currentRefund %> 元</h3>
   <h3>本月设备租金：<%= currentMonthRent %> 元</h3>
   <h3>本月应售设备金额：<%= currentMonthIncome %> 元</h3>
+  <h3 style="color: red;">本月还需销售设备金额：<%= currentIncomeAgain %> 元</h3>
   <h3>本月预计运营费用：<%= operatingAmount %> 元</h3>
 </body>
 
