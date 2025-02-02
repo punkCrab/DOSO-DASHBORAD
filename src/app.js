@@ -78,7 +78,10 @@ app.get('/', (req, res) => {
             })
         })
     ]).then(([results1, results2, results3, results4, results5]) => {
-        const cMonthReceive = results5[0]?.tx_amount ?? 0;
+        let cMonthReceive = 0;
+        if (results5 && results5[0] && results5[0].tx_amount) {
+            cMonthReceive = results5[0].tx_amount;
+        }
         const b202410Amount = results3[0].amount - results4[0].amount;
         const a202410Amount = results4[0].amount;
         const b202410Rent = b202410Amount * 0.02;
